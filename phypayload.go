@@ -140,6 +140,19 @@ func (m MIC) MarshalText() ([]byte, error) {
 	return []byte(m.String()), nil
 }
 
+// UnmarshalText implements encoding.TextUnmarshaler.
+func (m *MIC) UnmarshalText(text []byte) error {
+	b, err := hex.DecodeString(string(text))
+	if err != nil {
+		return err
+	}
+	if len(b) != len(m) {
+		return fmt.Errorf("lorawan: exactly %d bytes are expected", len(m))
+	}
+	copy(m[:], b)
+	return nil
+}
+
 // MHDR represents the MAC header.
 type MHDR struct {
 	MType MType `json:"mType"`
